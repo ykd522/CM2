@@ -16,15 +16,27 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from mysite import views
+from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'login/$', views.login),
-    url(r'adduser/', views.adduser),
-    url(r'getUserList/$', views.getUserList),
-    url(r'changePassword/$', views.changePassword),
-    url(r'upload/$', views.upLoad),
-    url(r'download/$', views.downLoad),
-    url(r'home/$', views.home, name = 'home'),
+    url(r'register$', views.Register),
+    url(r'api-token-auth$', obtain_jwt_token),
+    url(r'getRequestList$', views.GetRequestList), 
+    url(r'acceptRequest$', views.AcceptRequest),
+    url(r'rejectRequest$', views.RejectRequest),
+    url(r'addAdminUser$', views.AddAdminUser),
+    url(r'changePassword$', views.ChangePassword),
+    url(r'forgetPassword$', views.ForgetPassword),
+    url(r'viewFile$', views.ViewFile),
+    url(r'search$', views.FirstSearch),
+    url(r'downloadFile$', views.download),
+    url(r'deleteFile$', views.DeleteFile),
+    url(r'getFileDetail$', views.GetFileDetail),
+    
+
+
+
+
     
 ]

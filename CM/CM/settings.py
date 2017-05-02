@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import os.path
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,16 +42,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mysite',
     'rest_framework',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+
 ]
 
 ROOT_URLCONF = 'CM.urls'
@@ -71,14 +77,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'CM.wsgi.application'
 
-REST_FRAMEWORK={'DEFAULT_PERMISSION_CLASSES':( 'rest_framework.permissions.IsAuthenticated',),
-                 'DEFAULT_AUTHENTICATION_CLASSES': (
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-                }
-
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
+}
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
@@ -108,6 +118,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+#define stattic root
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
@@ -122,8 +138,29 @@ USE_L10N = True
 
 USE_TZ = True
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    #'rest_framework_jwt.utils.jwt_response_payload_handler',
+    'mysite.tokens.jwt_response_payload_handler',
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(hours=1),
+}
+
+
+AUTH_PROFILE_MODULE = 'djangoadmin.mysite.UserProfile'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
